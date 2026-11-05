@@ -3,98 +3,194 @@
 #include <math.h>
 #include <stdlib.h>
 
-
-int typef(int i,int j)
-{
-    //printf("Entrei na função");
-    if(j==0)
+double** IdentidadeQuadradaf(int Linha,int Coluna)
+{      
+    double **MatrizIdentidade = malloc(Coluna * sizeof(double *));
+    for(int i=0; i<Coluna;i++)
     {
-        return 1;
+        MatrizIdentidade[i] = malloc(Linha * sizeof(double));
     }
-    else if(i==0)
+    if(MatrizIdentidade == NULL)
     {
-        
-        return 2; 
+        printf("Alocacao de Memoria falhou!\n");
+        return NULL;
     }
-    else if(i==j)
+    /////
+    for(int i=0; i<Linha;i++)
     {
-        return 3;
-    }
-    else 
-        return 0;
-}
-void Indentf(int i,int j)
-{   
-    i--;
-    j--;
-    int acc=0;
-    printf("Matriz Identidade: \n");
-    for(int m=0; m<=i;m++)
-    {
-        for(int n=0; n<=j;n++)
+        for(int j=0; j<Coluna;j++)
         {
-            if(n==acc)
+            if(j==i)
             {
-                //printf("n %d acc %d\n",n,acc);
-
-                printf("1 ");
+                MatrizIdentidade[i][j] = 1;
             }
             else
-                printf("0 ");
+                MatrizIdentidade[i][j] = 0;
         }
-        acc++;
-        printf("\n");
+    }
+    printf("Matriz Identidade: \n");
+    return MatrizIdentidade;
+}
+
+double* TypeMatriz0f(int Linha, int Coluna, double Matriz[][Coluna])
+{
+    
+    if(Linha == 1)
+    {
+        printf("\nPreencher Matriz: \n");
+        for(int m=0; m<Coluna; m++)
+        {
+            scanf("%lf",&Matriz[0][m]);
+        }
+        double* MatrizLinha = malloc(Coluna * sizeof(double));
+        if(MatrizLinha == NULL)
+        {
+            printf("Alocacao de Memoria falhou!\n");
+            return NULL;
+        }
+        for(int i=0; i<Coluna;i++)
+        {
+            MatrizLinha[i] = Matriz[0][i];
+        }
+        printf("Matriz Linha Transposta: \n");
+        return MatrizLinha;
 
     }
+    else if(Coluna == 1)
+    {
+        printf("\nPreencher Matriz: \n");
+        for(int m=0; m<Linha; m++)
+        {
+            scanf("%lf",&Matriz[m][0]);
+        }
+        double* MatrizColuna = malloc(Linha * sizeof(double));
+        if(MatrizColuna == NULL)
+        {
+            printf("Alocacao de Memoria falhou!\n");
+            return NULL;
+        }
+        for(int i=0; i<Linha;i++)
+        {
+            MatrizColuna[i] = Matriz[i][0];
+        }
+        printf("Matriz Coluna Transposta: \n");
+        return MatrizColuna;
+    }
+    else 
+        return NULL;
+    
 }
-void Transpf(int i, int j,double Matriz[][j])
+double** TypeMatriz1f (int Linha, int Coluna, double Matriz[][Coluna])
 {
-    j--;
-    i--;
-    printf("Elementos da Matriz: \n");
-    for(int m=0; m<=i;m++)
+    if(Coluna == 0 && Linha == 0)
     {
-        for(int n=0; n<=j;n++)
+        printf("Nao eh permitido Matrizes com tamanho nulo");
+        return NULL;
+    }
+    printf("\nPreencher Matriz: \n");
+    for(int n=0; n<Linha; n++)
+    {
+       for(int m=0; m<Coluna; m++)
         {
-            scanf("%lf",&Matriz[m][n]);
-            //printf("%.1lf ",Matriz[m][n]);
+            scanf("%lf",&Matriz[n][m]);
         }
     }
-    printf("\033[H\033[J");
+    double **MatrizTranposta = malloc(Coluna * sizeof(double *));
+    for(int i=0; i<Coluna;i++)
+    {
+        MatrizTranposta[i] = malloc(Linha * sizeof(double));
+    }
+    if(MatrizTranposta == NULL)
+        {
+            printf("Alocacao de Memoria falhou!\n");
+            return NULL;
+        }
+    for(int i=0; i<Coluna;i++)
+    {
+        for(int j=0; j<Linha;j++)
+        {
+            MatrizTranposta[i][j] = Matriz[j][i];
+        }
+    }
     printf("Matriz Transposta: \n");
-    for(int n=0; n<=j;n++)
-    {
-        //printf("ColRef: %d LinRef: %d\n",i,j);
-        for(int m=0; m<=i;m++)
-        {
-            printf("%.1lf ", Matriz[m][n]);
-        }
-        printf("\n");
-    }
+    return MatrizTranposta;
 }
+
 
 int main()
 {
-    int i,j;
-    printf("Escolha i e j\n");
-    scanf("%d %d",&i,&j);
-    double Matriz[i][j];
-    printf("\033[H\033[J");
-    if(typef(i,j)==1)
+    int Linha, Coluna;
+    printf("Linha e Coluna: ");
+    scanf("%d %d",&Linha,&Coluna);
+    double *RecebeLinha,*RecebeColuna,**RecebeTransp,**RecebeIdentidade;
+    double Matriz[Linha][Coluna];
+    if(Coluna == 0 || Linha == 0)
     {
-        printf("Matriz Coluna");
-    }
-    else if(typef(i,j)==2)
-    {
-        printf("Matriz Linha");
-    }
-    else if(typef(i,j)==3)
-    {
-        Transpf(i,j,Matriz);
-        Indentf(i,j);
+        printf("Nao eh permitido Matrizes com tamanho nulo");
     }
     else
     {
-        Transpf(i,j,Matriz);
+        if(Coluna==1)
+        {
+            RecebeColuna = TypeMatriz0f(Linha,Coluna,Matriz);
+            for(int k=0; k<Linha; k++)
+            {
+                printf("%.1lf",RecebeColuna[k]);
+                printf("\n");
+            }
+            free(RecebeColuna);
+        }
+        else if(Linha==1)
+        {
+            RecebeLinha = TypeMatriz0f(Linha,Coluna,Matriz);
+            for(int k=0; k<Coluna; k++)
+            printf("%.1lf ",RecebeLinha[k]);
+            free(RecebeLinha);
+        }
+        else if(Linha==Coluna )
+        {
+            RecebeTransp = TypeMatriz1f(Linha,Coluna,Matriz);
+            for(int k=0; k<Coluna; k++)
+            {
+                for(int l=0; l<Linha; l++)
+                {
+                    printf("%.1lf ",RecebeTransp[k][l]);
+                }
+                printf("\n");
+            }
+            RecebeIdentidade = IdentidadeQuadradaf(Linha,Coluna);
+            for(int k=0; k<Coluna; k++)
+            {
+                for(int l=0; l<Linha; l++)
+                {
+                    printf("%.1lf ",RecebeIdentidade[k][l]);
+                }
+                printf("\n");
+            }
+            for(int i = 0;i<Coluna;i++)
+                free(RecebeIdentidade[i]);
+            
+            free(RecebeIdentidade);
+            for(int i = 0;i<Coluna;i++)
+                free(RecebeTransp[i]);
+            
+            free(RecebeTransp);
+        }
+        else
+        {
+            RecebeTransp = TypeMatriz1f(Linha,Coluna,Matriz);
+            for(int k=0; k<Coluna; k++)
+            {
+                for(int l=0; l<Linha; l++)
+                {
+                    printf("%.1lf ",RecebeTransp[k][l]);
+                }
+                printf("\n");
+            }
+            for(int i = 0;i<Coluna;i++)
+                free(RecebeTransp[i]);
+            
+            free(RecebeTransp);
+        }
     }
 }
